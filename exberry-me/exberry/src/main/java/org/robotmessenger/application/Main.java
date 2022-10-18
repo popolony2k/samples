@@ -63,6 +63,13 @@ public class Main {
 	 * @param args command line arguments
 	 */
     public static void main( String[] args ) {
+    	
+    	/*
+    	 *  For those who are trying to connect through a proxy server
+    	 *  uncomment below
+    	 */
+    	//System.setProperty( "java.net.useSystemProxies", "true" );
+
 
     	try {
     		String strSignature = "92e48fb675b749fe82ee78eccf39183ade91ce06bd4f1f5b1c6639f9c617587e";
@@ -101,8 +108,10 @@ public class Main {
 
 		            session.join();
 		    	}
-		    	else
+		    	else  {
 		            System.out.println( "Failed to start application" );
+		            System.exit( 0 );
+		    	}
 	        }
     	} ).start();
     	
