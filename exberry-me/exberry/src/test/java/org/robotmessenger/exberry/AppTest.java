@@ -1,4 +1,4 @@
-package com.b3digitas.exberry;
+package org.robotmessenger.exberry;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
