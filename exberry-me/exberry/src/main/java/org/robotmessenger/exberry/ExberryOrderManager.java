@@ -32,11 +32,12 @@ public class ExberryOrderManager extends ExberrySession  {
 	/**
 	 * Constructor. Initialize all class data.
 	 * @param strURI The Exberry environment URI to connect;
+	 * @param secreKey The user session secret key used to decrypt data;
 	 * @throws URISyntaxException 
 	 */
-	public ExberryOrderManager( String strURI, String apiKey, String signature ) throws URISyntaxException {
+	public ExberryOrderManager( String strURI, String apiKey, String secret ) throws URISyntaxException {
 
-		super( strURI, apiKey, signature );
+		super( strURI, apiKey, secret );
 	}
 	
 	/**

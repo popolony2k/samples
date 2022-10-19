@@ -72,12 +72,10 @@ public class Main {
 
 
     	try {
-    		String strSignature = "92e48fb675b749fe82ee78eccf39183ade91ce06bd4f1f5b1c6639f9c617587e";
-    		String strApiKey = "a31a75f4-0bf7-4264-8842-473fb77f7bca";
-        	//String strURI = "wss://demo.piesocket.com/v3/channel_1?api_key=VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV&notify_self";    	
-			//URI uri = new URI( strURI );
-
-			session = new ExberryOrderManager( ExberryOrderManager.EXBERRY_STAGING_URI, strApiKey, strSignature );
+    		String strSecretKey = "8e46b743e9cfa5c3ec1dfdfec2efe14b04d8f72dc574ea50582edf8ce5dbe792";
+    		String strApiKey    = "a31a75f4-0bf7-4264-8842-473fb77f7bca";
+ 
+			session = new ExberryOrderManager( ExberryOrderManager.EXBERRY_STAGING_URI, strApiKey, strSecretKey );
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

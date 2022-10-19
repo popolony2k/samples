@@ -4,9 +4,16 @@ package org.robotmessenger.exberry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.robotmessenger.base.ILifeCycle;
 import org.robotmessenger.comm.IConnectionListener;
@@ -22,7 +29,8 @@ import org.robotmessenger.exberry.dto.request.CreateSessionRequest;
  *
  */
 public class ExberrySession implements ILifeCycle, IConnectionListener  {
-			
+
+	String                secretKey;
 	Connection            connection;
 	CreateSessionRequest  session = new CreateSessionRequest();
 	
@@ -48,14 +56,15 @@ public class ExberrySession implements ILifeCycle, IConnectionListener  {
 	/**
 	 * Constructor. Initialize all class data.
 	 * @param strURI The Exberry environment URI to connect;
+	 * @param secreKey The user session secret key used to decrypt data;
 	 * @throws URISyntaxException 
 	 */
-	public ExberrySession( String strURI, String apiKey, String signature ) throws URISyntaxException {
+	public ExberrySession( String strURI, String apiKey, String secretKey ) throws URISyntaxException {
 
 		try {
 			URI uri = new URI( strURI );
-			connection = new Connection( uri, this );
-			session.d.signature = signature;
+			connection  = new Connection( uri, this );
+			this.secretKey = secretKey;
 			session.d.apiKey = apiKey;
 		} catch( URISyntaxException e ) {
 			throw e;
@@ -68,13 +77,24 @@ public class ExberrySession implements ILifeCycle, IConnectionListener  {
 	 * @return true if success otherwise false;
 	 */
 	public boolean sendAuth()  {
-		
-		//TODO: Ajustar depois que tivermos uma chave oficial
-		//session.d.timestamp = System.currentTimeMillis();
-		session.d.signature = "06d10d571e113c7803b4072e6485b2639db8983e806546980333c878ec237196";
-		session.d.timestamp = 1666040407406L;
-		
-		return sendRequest( session );
+				
+		try {
+			long          timeStamp    = System.currentTimeMillis();			
+			String        strSignature = String.format( "\"apiKey\":\"%s\",\"timestamp\":\"%d\"", session.d.apiKey, timeStamp );
+			Mac           sha256HMAC   = Mac.getInstance( "HmacSHA256" );
+			SecretKeySpec secretKey    = new SecretKeySpec( this.secretKey.getBytes( "UTF-8" ), "HmacSHA256" );
+			  
+			sha256HMAC.init( secretKey );
+
+			session.d.signature = new BigInteger( 1, sha256HMAC.doFinal( strSignature.getBytes( "UTF-8" ) ) ).toString( 16 );
+			session.d.timestamp = timeStamp;
+						
+			return sendRequest( session );
+
+		} catch( NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException e ) {
+			onError( e.getMessage() );
+			return false;
+		}
 	}
 	
 	// ILifeCycle implementation
