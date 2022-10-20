@@ -26,4 +26,10 @@ public interface ILifeCycle {
      * @return true on success, otherwise false;
      */
     public boolean join();
+    
+    /**
+     * Return the running status of an ILifeCycle object;
+     * @return
+     */
+    public boolean isRunning();
 }

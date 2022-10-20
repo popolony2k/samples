@@ -4,6 +4,7 @@ import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 
 import org.robotmessenger.base.ILifeCycle;
+import org.robotmessenger.comm.IConnection;
 import org.robotmessenger.comm.IConnectionListener;
 
 import javax.websocket.ClientEndpoint;
@@ -25,12 +26,14 @@ import java.nio.ByteBuffer;
  *
  */
 @ClientEndpoint
-public class Connection implements ILifeCycle {
+public class Connection implements ILifeCycle, IConnection {
 	
-    private Session session = null;
-    private URI endpointURI = null;
-    private IConnectionListener listener = null;
-    private WebSocketContainer container = null;
+    private Session             session     = null;
+    private URI                 endpointURI = null;
+    private IConnectionListener listener    = null;
+    private WebSocketContainer  container   = null;
+    private boolean             isRunning   = false;
+    private boolean             isConnected = false;
 
     
 
@@ -56,6 +59,7 @@ public class Connection implements ILifeCycle {
 	        try {
 	            container = ContainerProvider.getWebSocketContainer();
 	            container.connectToServer( this, endpointURI );
+	            isRunning = true;
 	        } catch ( Exception e ) {
 	        	if( listener != null )
 	        		listener.onError( e.getMessage() );
@@ -84,6 +88,7 @@ public class Connection implements ILifeCycle {
 	    		}
 	    		
 	    		container = null;
+	    		isRunning = false;
 	    	} catch( Exception e )  {
 	        	if( listener != null )
 	        		listener.onError( e.getMessage() );
@@ -120,11 +125,22 @@ public class Connection implements ILifeCycle {
     	
     	return false;
     }
+    
+    /**
+     * Return the running status of an ILifeCycle object;
+     * @return true if object was started by start() method;
+     */
+    @Override
+    public boolean isRunning()  {
+    	
+    	return isRunning;
+    }
+
         
     /**
      * Return the {@link IConnectionListener} object previously registered
      * through {@link addMessageListener}; 
-     * @return
+     * @return the listener object;
      */
     public IConnectionListener getMessageListener()  {
     	
@@ -133,9 +149,10 @@ public class Connection implements ILifeCycle {
 
     /**
      * Send a message through connection websocket;
-     *
      * @param data String data sent;
+     * @return true if data was successfully sent;
      */
+    @Override
     public boolean send( String data ) {
     	
     	try  {
@@ -150,7 +167,17 @@ public class Connection implements ILifeCycle {
     	}
     	
     	return true;
-    }	
+    }
+    
+    /**
+     * Return the object connected status;
+     * @return true if object is connected;
+     */
+    @Override
+    public boolean isConnected()  {
+    	
+    	return isConnected;
+    }
 
     /**
      * Callback hook for Connection open events.
@@ -161,6 +188,7 @@ public class Connection implements ILifeCycle {
     public void onOpen( Session session ) {
 
         if ( this.listener != null ) {
+            this.isConnected = true;
             this.listener.onOpen();
         }
 
@@ -177,6 +205,7 @@ public class Connection implements ILifeCycle {
     public void onClose( Session session, CloseReason reason ) {
     	        
         if ( this.listener != null ) {
+        	this.isConnected = false;
             this.listener.onClose( reason.getCloseCode().getCode() );
         }
 

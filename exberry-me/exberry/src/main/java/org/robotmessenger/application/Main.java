@@ -1,8 +1,9 @@
 package org.robotmessenger.application;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
-import java.util.Scanner;
-
 import org.robotmessenger.comm.IConnectionListener;
 import org.robotmessenger.exberry.ExberryOrderManager;
 
@@ -48,14 +49,33 @@ public class Main {
 	
 	/**
 	 * Wait for enter input key.
+	 * @throws IOException 
 	 */
-	public static void waitEnterKey()  {
+	public static char readKey() throws IOException  {
 		
-        Scanner scanner = new Scanner( System.in );
+        BufferedReader reader = new BufferedReader( new InputStreamReader( System.in ) );
+        String         data   = reader.readLine();
         
-        scanner.nextLine();
-        scanner.close();
-
+        if( data.length() > 0 )
+        	return data.charAt( 0 );
+        
+        return ' ';
+	}
+	
+	/**
+	 * Draw menu with all exberry operations available.
+	 */
+	public static void drawMenu()  {
+		System.out.println( "Exberry Operations" );
+		System.out.println( "============================================" );
+		
+		System.out.println( "1) Send authentication" );
+		System.out.println( "2) Request Order Book State" );
+		System.out.println( "3) Request Order Book Depth" );
+		System.out.println( "4) Request Mass Order Status" );
+		System.out.println( "5) Request Execution Reports" );
+		System.out.println( "6) Request Trades" );
+		System.out.println( "Q) Quit application" );
 	}
 	
 	/**
@@ -79,45 +99,66 @@ public class Main {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-    	
-    	new Thread( new Runnable()  {
-
-    		public void run() {	    	
-		    	if( ( session != null ) && session.start() )  {
-		            System.out.println( "Application running!" );
-		            
-		            if( !session.sendAuth() )
-		            	System.err.println( "Error sending authorization" );
-		            else
-		            //if( !session.requestOrderBookState() )
-		            //	System.err.println( "Error sending requestOrderBookState()" );
-		            //else
-		            //if( !session.requestOrderBookDepth( 0L ) )
-		            //	System.err.println( "Error sending requestOrderBookDepth()" );
-		            //else
-		            //if( !session.requestMassOrderStatus() )
-		            //	System.err.println( "Error sending requestMassOrderStatus()" );
-		            //else
-		            //if( !session.requestExecutionReports( 0L ) )
-		            //	System.err.println( "Error sending requestExecutionReports()" );
-                    //else
-		            if( !session.requestTrades( 0L ) )
-			            System.err.println( "Error sending requestTrades()" );
-
-		            session.join();
-		    	}
-		    	else  {
-		            System.out.println( "Failed to start application" );
-		            System.exit( 0 );
-		    	}
-	        }
-    	} ).start();
-    	
-    	waitEnterKey();
-        
-        if( session != null )
-        	session.stop();
-        
-        System.out.println( "Application stopped !!!" );
+     	
+    	if( ( session != null ) && session.start() )  {
+    		
+    		boolean   exit = false;
+   
+    		System.out.println( "Application running!" );
+            
+        	drawMenu();
+        	
+        	do {
+        	  char key;
+		
+        	  try {
+        		  key = readKey();
+				
+        		  switch( key )  {
+        		  	case 'q' :
+	        	  	case 'Q' :  
+	        	  		exit = true; 
+	        	  		break;
+	        	  	case '1' :
+			            if( !session.sendAuth() )
+			            	System.err.println( "Error sending authorization" );
+			            break;
+	        	  	case '2' :
+			            if( !session.requestOrderBookState() )
+			            	System.err.println( "Error sending requestOrderBookState()" );
+			            break;
+	        	  	case '3' :
+			            if( !session.requestOrderBookDepth( 0L ) )
+			            	System.err.println( "Error sending requestOrderBookDepth()" );
+			            break;
+	        	  	case '4' :
+			            if( !session.requestMassOrderStatus() )
+			            	System.err.println( "Error sending requestMassOrderStatus()" );
+			            break;
+	        	  	case '5' :
+			            if( !session.requestExecutionReports( 0L ) )
+			            	System.err.println( "Error sending requestExecutionReports()" );
+			            break;
+	        	  	case '6' :
+			            if( !session.requestTrades( 0L ) )
+				            System.err.println( "Error sending requestTrades()" );
+			            break;
+			        default :
+			        	drawMenu();
+        		  }
+        	  } catch( IOException e ) {
+        		  System.err.println( e.getMessage() );
+			  }        	  
+        	} while( !exit );
+        	
+            if( session != null )
+            	session.stop();
+        	
+            System.out.println( "Application finished!" );
+    	}
+    	else  {
+            System.out.println( "Failed to start application" );
+            System.exit( 0 );
+    	}    	
     }
 }

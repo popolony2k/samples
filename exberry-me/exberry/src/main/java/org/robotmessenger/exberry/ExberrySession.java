@@ -127,6 +127,24 @@ public class ExberrySession implements ILifeCycle, IConnectionListener  {
 		return ( ( connection != null ) && connection.join() );
 	}
 	
+    /**
+     * Return the running status of an ILifeCycle object;
+     * @return true if object was started by start() method;
+     */
+	@Override
+    public boolean isRunning()  {
+    	
+    	return connection.isRunning();
+    }
+	
+    /**
+     * Return the object connected status;
+     * @return true if object is connected;
+     */
+    public boolean isConnected()  {
+    	
+    	return connection.isConnected();
+    }
 	
 	// IConnectionListener event handling
 
