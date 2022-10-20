@@ -91,7 +91,7 @@ public class ExberrySession implements ILifeCycle, IConnectionListener  {
 						
 			return sendRequest( session );
 
-		} catch( NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException e ) {
+		} catch( Exception e ) {
 			onError( e.getMessage() );
 			return false;
 		}
