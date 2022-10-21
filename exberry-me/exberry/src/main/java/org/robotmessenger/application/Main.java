@@ -8,12 +8,13 @@ import java.util.Scanner;
 
 import org.robotmessenger.comm.IConnectionListener;
 import org.robotmessenger.exberry.ExberryOrderManager;
+import org.robotmessenger.exberry.dto.Enums.OrderType;
+import org.robotmessenger.exberry.dto.Enums.Side;
+import org.robotmessenger.exberry.dto.Enums.TimeInForce;
 import org.robotmessenger.exberry.dto.request.CancelOrderRequest;
 import org.robotmessenger.exberry.dto.request.ModifyOrderRequest;
 import org.robotmessenger.exberry.dto.request.PlaceOrderRequest;
-import org.robotmessenger.exberry.dto.request.PlaceOrderRequest.OrderType;
-import org.robotmessenger.exberry.dto.request.PlaceOrderRequest.Side;
-import org.robotmessenger.exberry.dto.request.PlaceOrderRequest.TimeInForce;
+import org.robotmessenger.exberry.dto.request.ReplaceOrderRequest;
 
 
 class ConnectionAdapter implements IConnectionListener  {
@@ -87,6 +88,7 @@ public class Main {
 		System.out.println( "8) Cancel Order" );
 		System.out.println( "9) Mass Cancel" );
 		System.out.println( "0) Modify Order" );
+		System.out.println( "A) Replace Order" );	
 		System.out.println( "Q) Quit application" );
 	}
 	
@@ -162,6 +164,30 @@ public class Main {
 	}
 	
 	/**
+	 * User entry for replace order call;
+	 * @param order The order object to send;
+	 * @return true if success otherwise false;
+	 */
+	private static boolean replaceOrder( ReplaceOrderRequest.ReplaceOrder order )  {
+
+//		System.out.print( "Order ID -> " );
+//
+//		@SuppressWarnings("resource")
+//		Scanner   scanner    = new Scanner( System.in );
+//		long      orderId    = scanner.nextInt();
+//		System.out.print( "Instrument -> " );
+//		String    instrument = scanner.next();
+//		System.out.print( "Quantity -> " );
+//		double    quantity   = Double.valueOf( scanner.next() );
+//		
+//		order.orderId    = orderId;
+//		order.instrument = instrument;
+//		order.quantity   = quantity;
+		
+		return ( session.isConnected() && session.replaceOrder( order ) );
+	}
+	
+	/**
 	 * Main program entry point.
 	 * @param args command line arguments
 	 */
@@ -186,10 +212,11 @@ public class Main {
      	
     	if( ( session != null ) && session.start() )  {
     		
-    		PlaceOrderRequest.PlaceOrder    placeOrder  = PlaceOrderRequest.newInstance();
-    		CancelOrderRequest.CancelOrder  cancelOrder = CancelOrderRequest.newInstace();
-    		ModifyOrderRequest.ModifyOrder  modifyOrder = ModifyOrderRequest.newInstance();
-    		boolean                         exit  = false;
+    		PlaceOrderRequest.PlaceOrder      placeOrder   = PlaceOrderRequest.newInstance();
+    		CancelOrderRequest.CancelOrder    cancelOrder  = CancelOrderRequest.newInstace();
+    		ModifyOrderRequest.ModifyOrder    modifyOrder  = ModifyOrderRequest.newInstance();
+    		ReplaceOrderRequest.ReplaceOrder  replaceOrder = ReplaceOrderRequest.newInstance();    		
+    		boolean                           exit  = false;
     		
    
     		System.out.println( "Application running!" );
@@ -247,6 +274,12 @@ public class Main {
 			            if( !modifyOrder( modifyOrder ) )
 				            System.err.println( "Error sending modifyOrder()" );
 			            break;
+	        	  	case 'a' :
+	        	  	case 'A' :
+			            if( !replaceOrder( replaceOrder ) )
+				            System.err.println( "Error sending replaceOrder()" );
+			            break;
+
 			        default :
 			        	drawMenu();
         		  }

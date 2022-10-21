@@ -11,6 +11,7 @@ import org.robotmessenger.exberry.dto.request.ModifyOrderRequest;
 import org.robotmessenger.exberry.dto.request.OrderBookDepthRequest;
 import org.robotmessenger.exberry.dto.request.OrderBookStateRequest;
 import org.robotmessenger.exberry.dto.request.PlaceOrderRequest;
+import org.robotmessenger.exberry.dto.request.ReplaceOrderRequest;
 import org.robotmessenger.exberry.dto.request.TradesRequest;
 
 /**
@@ -201,4 +202,27 @@ public class ExberryOrderManager extends ExberrySession  {
 		
 		return sendRequest( request );
 	}
+	
+	/**
+	 * The replaceOrder API is used to change a few of the order parameters 
+	 * in a single command for order which is resting on the book, this action 
+	 * will lose the time priority as it going to cancel the previous order and
+	 * place a new one.
+	 * If you send a valid order to be replaced, you should receive a response 
+	 * that confirms that order was replaced.
+	 * Non-valid replace order requests will be responded with the error message.
+	 * 
+	 * @param order Order object to send on request;
+	 * 
+	 * @return true if success otherwise false;
+	 */
+	public boolean replaceOrder( ReplaceOrderRequest.ReplaceOrder order )  {
+		
+		ReplaceOrderRequest    request = new ReplaceOrderRequest();
+		
+		request.d = order;
+		
+		return sendRequest( request );
+	}
+
 }  // ExberryOrderManager

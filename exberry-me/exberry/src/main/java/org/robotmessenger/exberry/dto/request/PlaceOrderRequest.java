@@ -3,6 +3,11 @@ package org.robotmessenger.exberry.dto.request;
 import java.util.Date;
 import java.util.Vector;
 
+import org.robotmessenger.exberry.dto.Enums.AccountType;
+import org.robotmessenger.exberry.dto.Enums.OrderType;
+import org.robotmessenger.exberry.dto.Enums.Side;
+import org.robotmessenger.exberry.dto.Enums.TimeInForce;
+
 
 /**
  * The placeOrder API lets you place a new order into exchange.
@@ -63,49 +68,6 @@ public class PlaceOrderRequest extends BaseRequest  {
 		public String      id;
 		public char        source;
 		public int         role;
-	}
-	
-	/**
-	 * Available order types
-	 * @author popolony2k
-	 *
-	 */
-	public enum OrderType  {
-		Limit,
-		Market
-	}
-	
-	/**
-	 * Order side
-	 * @author popolony2k
-	 *
-	 */
-	public enum Side  {
-		Buy,
-		Sell
-	}
-	
-	/**
-	 * Available time in force parameters
-	 * @author popolony2k
-	 *
-	 */
-	public enum TimeInForce  {
-		GTC, 
-		GTD, 
-		FOK, 
-		IOC, 
-		GAA
-	}
-	
-	/**
-	 * Account type.
-	 * @author popolony2k
-	 *
-	 */
-	public enum AccountType  {
-		Client,
-		House
-	}
+	}	
 }  // PlaceOrderRequest
 
