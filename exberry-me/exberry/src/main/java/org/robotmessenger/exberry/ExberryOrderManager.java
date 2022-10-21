@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 
 import org.robotmessenger.exberry.dto.request.CancelOrderRequest;
 import org.robotmessenger.exberry.dto.request.ExecutionReportsRequest;
+import org.robotmessenger.exberry.dto.request.MassCancelRequest;
 import org.robotmessenger.exberry.dto.request.MassOrderStatusRequest;
 import org.robotmessenger.exberry.dto.request.OrderBookDepthRequest;
 import org.robotmessenger.exberry.dto.request.OrderBookStateRequest;
@@ -151,6 +152,26 @@ public class ExberryOrderManager extends ExberrySession  {
 		CancelOrderRequest    request = new CancelOrderRequest();
 		
 		request.d = order;
+		
+		return sendRequest( request );
+	}
+	
+	/**
+	 * The massCancel API is used to cancel all the active order for specific 
+	 * instrument for specific market participant.
+	 * If you send a valid request, you should receive a response that confirms 
+	 * the number of orders that were cancelled.
+	 * Non-valid cancel order will be responded with the error message.
+	 * 
+	 * @param instrument The instrument identifier;
+	 * 
+	 * @return true if success otherwise false;
+	 */
+	public boolean massCancel( String instrument )  {
+
+		MassCancelRequest    request = new MassCancelRequest();
+		
+		request.d.instrument = instrument;
 		
 		return sendRequest( request );
 	}

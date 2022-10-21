@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
+import java.util.Scanner;
+
 import org.robotmessenger.comm.IConnectionListener;
 import org.robotmessenger.exberry.ExberryOrderManager;
 import org.robotmessenger.exberry.dto.request.CancelOrderRequest;
@@ -81,7 +83,8 @@ public class Main {
 		System.out.println( "5) Request Execution Reports" );
 		System.out.println( "6) Request Trades" );
 		System.out.println( "7) Place Order" );
-		System.out.println( "8) Cancel Order" );	
+		System.out.println( "8) Cancel Order" );
+		System.out.println( "9) Mass Cancel" );
 		System.out.println( "Q) Quit application" );
 	}
 	
@@ -115,6 +118,21 @@ public class Main {
 		order.instrument  = "INS3";
 		
 		return ( session.isConnected() && session.cancelOrder( order ) );
+	}
+	
+	/**
+	 * User entry for mass cancel orders call;
+	 * @return true if success otherwise false;
+	 */
+	private static boolean massCancel()  {
+		
+		System.out.println( "Instrument -> " );
+
+		@SuppressWarnings("resource")
+		Scanner   scanner    = new Scanner( System.in );
+		String    instrument = scanner.nextLine();
+					
+		return ( session.isConnected() && session.massCancel( instrument ) );
 	}
 	
 	/**
@@ -192,6 +210,10 @@ public class Main {
 			            break;
 	        	  	case '8' :
 			            if( !cancelOrder( cancelOrder ) )
+				            System.err.println( "Error sending requestTrades()" );
+			            break;
+	        	  	case '9' :
+			            if( !massCancel() )
 				            System.err.println( "Error sending requestTrades()" );
 			            break;
 			        default :
