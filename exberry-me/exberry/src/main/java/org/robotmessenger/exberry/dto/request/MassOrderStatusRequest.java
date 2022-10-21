@@ -1,6 +1,13 @@
 package org.robotmessenger.exberry.dto.request;
 
 
+/**
+ * Any participant can use the massOrderStatus API to retrieve the current 
+ * status of all its own active orders.
+ * 
+ * @author popolony2k
+ *
+ */
 public class MassOrderStatusRequest extends BaseRequest  {
 	
 	private static final long serialVersionUID = 1L;

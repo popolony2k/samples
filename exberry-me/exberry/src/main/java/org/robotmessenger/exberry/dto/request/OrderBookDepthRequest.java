@@ -1,6 +1,13 @@
 package org.robotmessenger.exberry.dto.request;
 
 
+/**
+ * The orderBookDepth stream provides the full order book depth data. 
+ * This stream is public and all consumers receive the messages simultaneously.
+ * 
+ * @author popolony2k
+ *
+ */
 public class OrderBookDepthRequest extends BaseRequest  {
 	
 	private static final long serialVersionUID = 1L;

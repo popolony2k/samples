@@ -1,6 +1,12 @@
 package org.robotmessenger.exberry.dto.request;
 
 
+/**
+ * Trades API allows to get a real time stream for all the trades data 
+ * 
+ * @author popolony2k
+ *
+ */
 public class TradesRequest extends BaseRequest  {
 	
 	private static final long serialVersionUID = 1L;

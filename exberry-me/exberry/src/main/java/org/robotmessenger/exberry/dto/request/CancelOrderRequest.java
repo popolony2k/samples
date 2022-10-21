@@ -1,7 +1,12 @@
 package org.robotmessenger.exberry.dto.request;
 
 
-
+/**
+ * The cancelOrder API is used to request that an order be cancelled.
+ * 
+ * @author popolony2k
+ *
+ */
 public class CancelOrderRequest extends BaseRequest  {
 	
 	private static final long serialVersionUID = 1L;

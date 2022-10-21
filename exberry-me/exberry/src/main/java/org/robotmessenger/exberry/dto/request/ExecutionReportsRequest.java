@@ -1,6 +1,13 @@
 package org.robotmessenger.exberry.dto.request;
 
 
+/**
+ * Any participant can use the executionReportsAPI to subscribe to its 
+ * own orders and trades events.
+ * 
+ * @author popolony2k
+ *
+ */
 public class ExecutionReportsRequest extends BaseRequest  {
 	
 	private static final long serialVersionUID = 1L;

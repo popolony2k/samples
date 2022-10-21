@@ -1,6 +1,13 @@
 package org.robotmessenger.exberry.dto.request;
 
 
+/**
+ * This stream provides close to real time snapshot of order book state 
+ * for all traded instruments.
+ * 
+ * @author popolony2k
+ *
+ */
 public class OrderBookStateRequest extends BaseRequest  {
 	
 	private static final long serialVersionUID = 1L;

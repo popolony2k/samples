@@ -3,6 +3,13 @@ package org.robotmessenger.exberry.dto.request;
 import java.util.Date;
 import java.util.Vector;
 
+
+/**
+ * The placeOrder API lets you place a new order into exchange.
+ * 
+ * @author popolony2k
+ *
+ */
 public class PlaceOrderRequest extends BaseRequest  {
 	
 	private static final long serialVersionUID = 1L;
