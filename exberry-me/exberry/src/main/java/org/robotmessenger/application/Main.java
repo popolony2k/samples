@@ -9,6 +9,7 @@ import java.util.Scanner;
 import org.robotmessenger.comm.IConnectionListener;
 import org.robotmessenger.exberry.ExberryOrderManager;
 import org.robotmessenger.exberry.dto.request.CancelOrderRequest;
+import org.robotmessenger.exberry.dto.request.ModifyOrderRequest;
 import org.robotmessenger.exberry.dto.request.PlaceOrderRequest;
 import org.robotmessenger.exberry.dto.request.PlaceOrderRequest.OrderType;
 import org.robotmessenger.exberry.dto.request.PlaceOrderRequest.Side;
@@ -85,6 +86,7 @@ public class Main {
 		System.out.println( "7) Place Order" );
 		System.out.println( "8) Cancel Order" );
 		System.out.println( "9) Mass Cancel" );
+		System.out.println( "0) Modify Order" );
 		System.out.println( "Q) Quit application" );
 	}
 	
@@ -126,13 +128,37 @@ public class Main {
 	 */
 	private static boolean massCancel()  {
 		
-		System.out.println( "Instrument -> " );
+		System.out.print( "Instrument -> " );
 
 		@SuppressWarnings("resource")
 		Scanner   scanner    = new Scanner( System.in );
 		String    instrument = scanner.nextLine();
 					
 		return ( session.isConnected() && session.massCancel( instrument ) );
+	}
+	
+	/**
+	 * User entry for modify order call;
+	 * @param order The order object to send;
+	 * @return true if success otherwise false;
+	 */
+	private static boolean modifyOrder( ModifyOrderRequest.ModifyOrder order )  {
+
+		System.out.print( "Order ID -> " );
+
+		@SuppressWarnings("resource")
+		Scanner   scanner    = new Scanner( System.in );
+		long      orderId    = scanner.nextInt();
+		System.out.print( "Instrument -> " );
+		String    instrument = scanner.next();
+		System.out.print( "Quantity -> " );
+		double    quantity   = Double.valueOf( scanner.next() );
+		
+		order.orderId    = orderId;
+		order.instrument = instrument;
+		order.quantity   = quantity;
+		
+		return ( session.isConnected() && session.modifyOrder( order ) );
 	}
 	
 	/**
@@ -162,6 +188,7 @@ public class Main {
     		
     		PlaceOrderRequest.PlaceOrder    placeOrder  = PlaceOrderRequest.newInstance();
     		CancelOrderRequest.CancelOrder  cancelOrder = CancelOrderRequest.newInstace();
+    		ModifyOrderRequest.ModifyOrder  modifyOrder = ModifyOrderRequest.newInstance();
     		boolean                         exit  = false;
     		
    
@@ -206,15 +233,19 @@ public class Main {
 			            break;
 	        	  	case '7' :
 			            if( !placeOrder( placeOrder ) )
-				            System.err.println( "Error sending requestTrades()" );
+				            System.err.println( "Error sending placesOerder()" );
 			            break;
 	        	  	case '8' :
 			            if( !cancelOrder( cancelOrder ) )
-				            System.err.println( "Error sending requestTrades()" );
+				            System.err.println( "Error sending cancelOrder()" );
 			            break;
 	        	  	case '9' :
 			            if( !massCancel() )
-				            System.err.println( "Error sending requestTrades()" );
+				            System.err.println( "Error sending massCancel()" );
+			            break;
+	        	  	case '0' :
+			            if( !modifyOrder( modifyOrder ) )
+				            System.err.println( "Error sending modifyOrder()" );
 			            break;
 			        default :
 			        	drawMenu();

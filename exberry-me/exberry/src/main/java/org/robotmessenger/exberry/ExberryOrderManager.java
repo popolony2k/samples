@@ -7,6 +7,7 @@ import org.robotmessenger.exberry.dto.request.CancelOrderRequest;
 import org.robotmessenger.exberry.dto.request.ExecutionReportsRequest;
 import org.robotmessenger.exberry.dto.request.MassCancelRequest;
 import org.robotmessenger.exberry.dto.request.MassOrderStatusRequest;
+import org.robotmessenger.exberry.dto.request.ModifyOrderRequest;
 import org.robotmessenger.exberry.dto.request.OrderBookDepthRequest;
 import org.robotmessenger.exberry.dto.request.OrderBookStateRequest;
 import org.robotmessenger.exberry.dto.request.PlaceOrderRequest;
@@ -24,13 +25,7 @@ public class ExberryOrderManager extends ExberrySession  {
 	 * Staging exberry sandbox environment URI
 	 */
 	public static final String EXBERRY_STAGING_URI = "wss://sandbox-shared.staging.exberry-uat.io";
-	
-	OrderBookStateRequest   orderBookState   = new OrderBookStateRequest();
-	OrderBookDepthRequest   orderBookDepth   = new OrderBookDepthRequest();
-	MassOrderStatusRequest  massOrderStatus  = new MassOrderStatusRequest();
-	ExecutionReportsRequest executionReports = new ExecutionReportsRequest();
-	TradesRequest           trades           = new TradesRequest();
-	
+		
 
 	/**
 	 * Constructor. Initialize all class data.
@@ -50,7 +45,9 @@ public class ExberryOrderManager extends ExberrySession  {
 	 */
 	public boolean requestOrderBookState()  {
 		
-		return sendRequest( orderBookState );
+		OrderBookStateRequest   request = new OrderBookStateRequest();
+		
+		return sendRequest( request );
 	}
 	
 	/**
@@ -65,9 +62,11 @@ public class ExberryOrderManager extends ExberrySession  {
 	 */
 	public boolean requestOrderBookDepth( Long trackingNumber )  {
 		
-		orderBookDepth.d.trackingNumber = trackingNumber;
+		OrderBookDepthRequest   request = new OrderBookDepthRequest();
+
+		request.d.trackingNumber = trackingNumber;
 		
-		return sendRequest( orderBookDepth );
+		return sendRequest( request );
 	}
 	
 	/**
@@ -78,7 +77,9 @@ public class ExberryOrderManager extends ExberrySession  {
 	 */
 	public boolean requestMassOrderStatus()  {
 		
-		return sendRequest( massOrderStatus );
+		MassOrderStatusRequest  request = new MassOrderStatusRequest();
+		
+		return sendRequest( request );
 	}
 	
 	/**
@@ -93,9 +94,11 @@ public class ExberryOrderManager extends ExberrySession  {
 	 */
 	public boolean requestExecutionReports( Long trackingNumber )  {
 		
-		executionReports.d.trackingNumber = trackingNumber;
+		ExecutionReportsRequest request = new ExecutionReportsRequest();
 		
-		return sendRequest( executionReports );
+		request.d.trackingNumber = trackingNumber;
+		
+		return sendRequest( request );
 	}
 	
 	/**
@@ -110,9 +113,11 @@ public class ExberryOrderManager extends ExberrySession  {
 	 */
 	public boolean requestTrades( Long trackingNumber )  {
 		
-		trades.d.trackingNumber = trackingNumber;
+		TradesRequest           request = new TradesRequest();
 		
-		return sendRequest( trades );
+		request.d.trackingNumber = trackingNumber;
+		
+		return sendRequest( request );
 	}
 	
 	/**
@@ -172,6 +177,27 @@ public class ExberryOrderManager extends ExberrySession  {
 		MassCancelRequest    request = new MassCancelRequest();
 		
 		request.d.instrument = instrument;
+		
+		return sendRequest( request );
+	}
+	
+	/**
+	 * The modifyOrder API is used to reduce the order quantity without 
+	 * losing the time priority.
+	 * If you send a valid order to modify, you should receive a response
+	 * that confirms that order was modified. This means that remaining open 
+	 * quantity of the order was reduced.
+	 * Non-valid modify order requests will be responded with the error message.
+	 * 
+	 * @param order Order object to send on request;
+	 * 
+	 * @return true if success otherwise false;
+	 */
+	public boolean modifyOrder( ModifyOrderRequest.ModifyOrder order )  {
+		
+		ModifyOrderRequest    request = new ModifyOrderRequest();
+		
+		request.d = order;
 		
 		return sendRequest( request );
 	}
