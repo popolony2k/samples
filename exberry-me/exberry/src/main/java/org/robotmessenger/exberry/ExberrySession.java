@@ -28,6 +28,7 @@ public class ExberrySession implements ILifeCycle, IConnectionListener  {
 
 	String                secretKey;
 	Connection            connection;
+	boolean               verbose = false;
 	CreateSessionRequest  session = new CreateSessionRequest();
 	
 	
@@ -43,7 +44,9 @@ public class ExberrySession implements ILifeCycle, IConnectionListener  {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String strJson = gson.toJson( request );
 				
-		System.out.println( strJson );
+		if( verbose )  {
+			System.out.println( strJson );
+		}
 				
 		return ( ( connection != null ) && ( connection.send( strJson ) ) );
 
@@ -59,12 +62,30 @@ public class ExberrySession implements ILifeCycle, IConnectionListener  {
 
 		try {
 			URI uri = new URI( strURI );
-			connection  = new Connection( uri, this );
-			this.secretKey = secretKey;
+			connection = new Connection( uri, this );
+			this.secretKey   = secretKey;
 			session.d.apiKey = apiKey;
 		} catch( URISyntaxException e ) {
 			throw e;
 		}
+	}
+	
+	/**
+	 * Set the verbose information mode to show debug information on default console;
+	 * @param verbose The new verbose mode;
+	 */
+	public void setVerbose( boolean verbose )  {
+		
+		this.verbose = verbose;
+	}
+	
+	/**
+	 * Get the verbose mode status
+	 * @return true if verbose mode is active, otherwise false;
+	 */
+	public boolean getVerbose()  {
+		
+		return this.verbose;
 	}
 	
 	/**

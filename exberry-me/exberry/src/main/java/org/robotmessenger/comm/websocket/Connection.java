@@ -188,11 +188,11 @@ public class Connection implements ILifeCycle, IConnection {
     public void onOpen( Session session ) {
 
         if ( this.listener != null ) {
-            this.isConnected = true;
             this.listener.onOpen();
         }
 
-        this.session = session;
+        this.isConnected = true;
+        this.session     = session;
     }
 
     /**
@@ -205,11 +205,11 @@ public class Connection implements ILifeCycle, IConnection {
     public void onClose( Session session, CloseReason reason ) {
     	        
         if ( this.listener != null ) {
-        	this.isConnected = false;
             this.listener.onClose( reason.getCloseCode().getCode() );
         }
 
-        this.session = null;
+    	this.isConnected = false;
+        this.session     = null;
     }
     
     /**

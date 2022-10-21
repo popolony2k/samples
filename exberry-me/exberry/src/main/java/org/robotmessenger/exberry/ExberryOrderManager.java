@@ -7,6 +7,7 @@ import org.robotmessenger.exberry.dto.request.ExecutionReportsRequest;
 import org.robotmessenger.exberry.dto.request.MassOrderStatusRequest;
 import org.robotmessenger.exberry.dto.request.OrderBookDepthRequest;
 import org.robotmessenger.exberry.dto.request.OrderBookStateRequest;
+import org.robotmessenger.exberry.dto.request.PlaceOrderRequest;
 import org.robotmessenger.exberry.dto.request.TradesRequest;
 
 /**
@@ -110,6 +111,27 @@ public class ExberryOrderManager extends ExberrySession  {
 		trades.d.trackingNumber = trackingNumber;
 		
 		return sendRequest( trades );
+	}
+	
+	/**
+	 * The placeOrder API lets you place a new order into exchange.
+	 * If you send a valid order, you should receive a response with 
+	 * "Pending" status, this means that order was validated and accepted. 
+	 * The response contains the exchange orderId which should be stored and 
+	 * used for later status changes, notified via the orderBookDepth stream.
+	 * Non-valid order will be responded with error message.
+	 * 
+	 * @param order Order object to send on request;
+	 * 
+	 * @return true if success otherwise false;
+	 */
+	public boolean placeOrder( PlaceOrderRequest.PlaceOrder order )  {
+		
+		PlaceOrderRequest    orderRequest = new PlaceOrderRequest();
+		
+		orderRequest.d = order;
+		
+		return sendRequest( orderRequest );
 	}
 
 }  // ExberryOrderManager

@@ -6,6 +6,10 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import org.robotmessenger.comm.IConnectionListener;
 import org.robotmessenger.exberry.ExberryOrderManager;
+import org.robotmessenger.exberry.dto.request.PlaceOrderRequest;
+import org.robotmessenger.exberry.dto.request.PlaceOrderRequest.OrderType;
+import org.robotmessenger.exberry.dto.request.PlaceOrderRequest.Side;
+import org.robotmessenger.exberry.dto.request.PlaceOrderRequest.TimeInForce;
 
 
 class ConnectionAdapter implements IConnectionListener  {
@@ -44,14 +48,14 @@ class ConnectionAdapter implements IConnectionListener  {
  */
 public class Main {
 
-	static ExberryOrderManager session = null;
+	private static ExberryOrderManager session = null;
 
 	
 	/**
 	 * Wait for enter input key.
 	 * @throws IOException 
 	 */
-	public static char readKey() throws IOException  {
+	private static char readKey() throws IOException  {
 		
         BufferedReader reader = new BufferedReader( new InputStreamReader( System.in ) );
         String         data   = reader.readLine();
@@ -65,7 +69,7 @@ public class Main {
 	/**
 	 * Draw menu with all exberry operations available.
 	 */
-	public static void drawMenu()  {
+	private static void drawMenu()  {
 		System.out.println( "Exberry Operations" );
 		System.out.println( "============================================" );
 		
@@ -75,7 +79,28 @@ public class Main {
 		System.out.println( "4) Request Mass Order Status" );
 		System.out.println( "5) Request Execution Reports" );
 		System.out.println( "6) Request Trades" );
+		System.out.println( "7) Place Order" );		
 		System.out.println( "Q) Quit application" );
+	}
+	
+	/**
+	 * User entry for place order call;
+	 * @param order The order object to send;
+	 * @return true if success otherwise false;
+	 */
+	private static boolean placeOrder( PlaceOrderRequest.PlaceOrder order )  {
+		
+		order.mpOrderId   = 5005;
+		order.orderType   = OrderType.Limit;
+		order.side        = Side.Buy;
+		order.quantity    = 1.3;
+		order.price       = 100.33;
+		order.instrument  = "INS3";
+		order.mpOrderId   = 5004;
+	    order.timeInForce = TimeInForce.GTC;
+	    order.userId      = "UATUserTest10";
+		
+		return ( session.isConnected() && session.placeOrder( order ) );
 	}
 	
 	/**
@@ -96,13 +121,16 @@ public class Main {
     		String strApiKey    = "a31a75f4-0bf7-4264-8842-473fb77f7bca";
  
 			session = new ExberryOrderManager( ExberryOrderManager.EXBERRY_STAGING_URI, strApiKey, strSecretKey );
+			session.setVerbose( true );
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
      	
     	if( ( session != null ) && session.start() )  {
     		
-    		boolean   exit = false;
+    		PlaceOrderRequest.PlaceOrder order = PlaceOrderRequest.newPlaceOrder();
+    		boolean                      exit  = false;
+    		
    
     		System.out.println( "Application running!" );
             
@@ -120,27 +148,31 @@ public class Main {
 	        	  		exit = true; 
 	        	  		break;
 	        	  	case '1' :
-			            if( !session.sendAuth() )
+			            if( !session.isConnected() || !session.sendAuth() )
 			            	System.err.println( "Error sending authorization" );
 			            break;
 	        	  	case '2' :
-			            if( !session.requestOrderBookState() )
+			            if( !session.isConnected() || !session.requestOrderBookState() )
 			            	System.err.println( "Error sending requestOrderBookState()" );
 			            break;
 	        	  	case '3' :
-			            if( !session.requestOrderBookDepth( 0L ) )
+			            if( !session.isConnected() || !session.requestOrderBookDepth( 0L ) )
 			            	System.err.println( "Error sending requestOrderBookDepth()" );
 			            break;
 	        	  	case '4' :
-			            if( !session.requestMassOrderStatus() )
+			            if( !session.isConnected() || !session.requestMassOrderStatus() )
 			            	System.err.println( "Error sending requestMassOrderStatus()" );
 			            break;
 	        	  	case '5' :
-			            if( !session.requestExecutionReports( 0L ) )
+			            if( !session.isConnected() || !session.requestExecutionReports( 0L ) )
 			            	System.err.println( "Error sending requestExecutionReports()" );
 			            break;
 	        	  	case '6' :
-			            if( !session.requestTrades( 0L ) )
+			            if( !session.isConnected() || !session.requestTrades( 0L ) )
+				            System.err.println( "Error sending requestTrades()" );
+			            break;
+	        	  	case '7' :
+			            if( !placeOrder( order ) )
 				            System.err.println( "Error sending requestTrades()" );
 			            break;
 			        default :
