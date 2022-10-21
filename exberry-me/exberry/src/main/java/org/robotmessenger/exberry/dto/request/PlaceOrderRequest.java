@@ -22,7 +22,7 @@ public class PlaceOrderRequest extends BaseRequest  {
 	 * Return an instance of PlaceOrder object;
 	 * @return a PlaceOrder allocated object;
 	 */
-	public static PlaceOrder newPlaceOrder()  {
+	public static PlaceOrder newInstance()  {
 
 		return new PlaceOrderRequest().new PlaceOrder();
 	}
@@ -100,5 +100,5 @@ public class PlaceOrderRequest extends BaseRequest  {
 		Client,
 		House
 	}
-}  // TradesRequest
+}  // PlaceOrderRequest
 

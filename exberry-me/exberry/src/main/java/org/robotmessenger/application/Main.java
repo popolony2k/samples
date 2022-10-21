@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import org.robotmessenger.comm.IConnectionListener;
 import org.robotmessenger.exberry.ExberryOrderManager;
+import org.robotmessenger.exberry.dto.request.CancelOrderRequest;
 import org.robotmessenger.exberry.dto.request.PlaceOrderRequest;
 import org.robotmessenger.exberry.dto.request.PlaceOrderRequest.OrderType;
 import org.robotmessenger.exberry.dto.request.PlaceOrderRequest.Side;
@@ -79,7 +80,8 @@ public class Main {
 		System.out.println( "4) Request Mass Order Status" );
 		System.out.println( "5) Request Execution Reports" );
 		System.out.println( "6) Request Trades" );
-		System.out.println( "7) Place Order" );		
+		System.out.println( "7) Place Order" );
+		System.out.println( "8) Cancel Order" );	
 		System.out.println( "Q) Quit application" );
 	}
 	
@@ -90,7 +92,6 @@ public class Main {
 	 */
 	private static boolean placeOrder( PlaceOrderRequest.PlaceOrder order )  {
 		
-		order.mpOrderId   = 5005;
 		order.orderType   = OrderType.Limit;
 		order.side        = Side.Buy;
 		order.quantity    = 1.3;
@@ -101,6 +102,19 @@ public class Main {
 	    order.userId      = "UATUserTest10";
 		
 		return ( session.isConnected() && session.placeOrder( order ) );
+	}
+	
+	/**
+	 * User entry for cancel order call;
+	 * @param order The order object to send;
+	 * @return true if success otherwise false;
+	 */
+	private static boolean cancelOrder( CancelOrderRequest.CancelOrder order )  {
+		
+		order.mpOrderId   = 5004L;
+		order.instrument  = "INS3";
+		
+		return ( session.isConnected() && session.cancelOrder( order ) );
 	}
 	
 	/**
@@ -128,8 +142,9 @@ public class Main {
      	
     	if( ( session != null ) && session.start() )  {
     		
-    		PlaceOrderRequest.PlaceOrder order = PlaceOrderRequest.newPlaceOrder();
-    		boolean                      exit  = false;
+    		PlaceOrderRequest.PlaceOrder    placeOrder  = PlaceOrderRequest.newInstance();
+    		CancelOrderRequest.CancelOrder  cancelOrder = CancelOrderRequest.newInstace();
+    		boolean                         exit  = false;
     		
    
     		System.out.println( "Application running!" );
@@ -172,7 +187,11 @@ public class Main {
 				            System.err.println( "Error sending requestTrades()" );
 			            break;
 	        	  	case '7' :
-			            if( !placeOrder( order ) )
+			            if( !placeOrder( placeOrder ) )
+				            System.err.println( "Error sending requestTrades()" );
+			            break;
+	        	  	case '8' :
+			            if( !cancelOrder( cancelOrder ) )
 				            System.err.println( "Error sending requestTrades()" );
 			            break;
 			        default :

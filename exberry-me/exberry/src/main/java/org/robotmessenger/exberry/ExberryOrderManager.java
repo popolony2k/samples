@@ -3,6 +3,7 @@ package org.robotmessenger.exberry;
 
 import java.net.URISyntaxException;
 
+import org.robotmessenger.exberry.dto.request.CancelOrderRequest;
 import org.robotmessenger.exberry.dto.request.ExecutionReportsRequest;
 import org.robotmessenger.exberry.dto.request.MassOrderStatusRequest;
 import org.robotmessenger.exberry.dto.request.OrderBookDepthRequest;
@@ -127,11 +128,30 @@ public class ExberryOrderManager extends ExberrySession  {
 	 */
 	public boolean placeOrder( PlaceOrderRequest.PlaceOrder order )  {
 		
-		PlaceOrderRequest    orderRequest = new PlaceOrderRequest();
+		PlaceOrderRequest    request = new PlaceOrderRequest();
 		
-		orderRequest.d = order;
+		request.d = order;
 		
-		return sendRequest( orderRequest );
+		return sendRequest( request );
 	}
-
+	
+	/**
+	 * The cancelOrder API is used to request that an order be cancelled.
+	 * If you send a valid order to cancel, you should receive a response that 
+	 * confirms that order was cancelled. This means that remaining open quantity 
+	 * of the order was cancelled.
+	 * Non-valid cancel order will be responded with the error message.
+	 * 
+	 * @param order Order object to send on request;
+	 * 
+	 * @return true if success otherwise false;
+	 */
+	public boolean cancelOrder( CancelOrderRequest.CancelOrder order )  {
+		
+		CancelOrderRequest    request = new CancelOrderRequest();
+		
+		request.d = order;
+		
+		return sendRequest( request );
+	}
 }  // ExberryOrderManager
