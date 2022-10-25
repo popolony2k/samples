@@ -2,6 +2,7 @@ package org.robotmessenger.application;
 
 import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Vector;
 import org.robotmessenger.exberry.ExberryOrderManager;
@@ -439,6 +440,7 @@ public class Main {
 	        	        
 	        panel.addComponent( new Label( "Time In Force" ) );
 	        final ComboBox<String> timeInForceCombo = new ComboBox<String>();
+	        timeInForceCombo.addItem( "NONE" );
 	        timeInForceCombo.addItem( "GTC" );
 	        timeInForceCombo.addItem( "GTD" );
 	        timeInForceCombo.addItem( "FOK" );
@@ -447,7 +449,7 @@ public class Main {
 	        panel.addComponent( timeInForceCombo );
 	        
 	        panel.addComponent( new Label( "Expiry date (GTD)" ) );
-	        final TextBox expiryDateTxt = new TextBox().addTo( panel );
+	        final TextBox expiryDateTxt = new TextBox(new SimpleDateFormat( "yyyy-MM-dd" ).format( Calendar.getInstance().getTime() ) ).addTo( panel );
 
 	        panel.addComponent( new EmptySpace( new TerminalSize( 0, 0 ) ) );
 	        panel.addComponent( lblOutput );
@@ -457,10 +459,12 @@ public class Main {
 	            public void run() {
 	            	
 	            	try  {
+	            		int  selectedIndex = timeInForceCombo.getSelectedIndex();
+	            		
 		                order.quantity    = Double.parseDouble( quantityTxt.getText() );
 		                order.price       = Double.parseDouble( priceTxt.getText() );
 		                order.instrument  = instrumentTxt.getText();
-		                order.timeInForce = TimeInForce.values()[timeInForceCombo.getSelectedIndex()]; 
+		                order.timeInForce = ( selectedIndex > 0 ? TimeInForce.values()[selectedIndex - 1] : null ); 
 		                order.orderId     = Long.parseLong( orderIdTxt.getText() );
 		                
 		                if( order.timeInForce == TimeInForce.GTD )  {		                	
