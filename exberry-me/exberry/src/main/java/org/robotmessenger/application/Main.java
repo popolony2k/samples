@@ -184,7 +184,7 @@ public class Main {
 	                order.orderType   = OrderType.values()[orderTypeCombo.getSelectedIndex()];
 	                order.side        = Side.values()[orderSideCombo.getSelectedIndex()];
 	                order.quantity    = Double.parseDouble( quantityTxt.getText() );
-	                order.price       = Double.parseDouble( priceTxt.getText() );
+	                order.price       = ( !priceTxt.getText().isEmpty() ? Double.parseDouble( priceTxt.getText() ) : null );
 	                order.instrument  = instrumentTxt.getText();
 	                order.mpOrderId   = Long.parseLong( mpOrderIdTxt.getText() );
 	                order.timeInForce = TimeInForce.values()[timeInForceCombo.getSelectedIndex()]; 
@@ -237,6 +237,9 @@ public class Main {
 	        
 	        panel.setLayoutManager(new GridLayout(2));
 
+	        panel.addComponent( new Label( "Order Id" ) );
+	        final TextBox orderIdTxt = new TextBox( "1004" ).addTo( panel );
+
 	        panel.addComponent( new Label( "MpOrderId" ) );
 	        final TextBox mpOrderIdTxt = new TextBox( "5004" ).addTo( panel );
 
@@ -251,7 +254,8 @@ public class Main {
 	            public void run() {
 	            	
 	                order.instrument  = instrumentTxt.getText();
-	                order.mpOrderId   = Long.parseLong( mpOrderIdTxt.getText() );
+	                order.orderId     = ( !orderIdTxt.getText().isEmpty() ? Long.parseLong( orderIdTxt.getText() ) : null );
+	                order.mpOrderId   = ( !mpOrderIdTxt.getText().isEmpty() ? Long.parseLong( mpOrderIdTxt.getText() ) : null );
 	                
 	                pair.setValue( true );
 	                window.close();
