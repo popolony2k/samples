@@ -26,7 +26,7 @@ public class CancelOrderRequest extends BaseRequest  {
 	 * Return an instance of PlaceOrder object;
 	 * @return a PlaceOrder allocated object;
 	 */
-	public static CancelOrder newInstace()  {
+	public static CancelOrder newInstance()  {
 
 		return new CancelOrderRequest().new CancelOrder();
 	}

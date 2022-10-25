@@ -46,7 +46,7 @@ public class ReplaceOrderRequest extends BaseRequest  {
 		public double         quantity;
 		public double         price;
 		public TimeInForce    timeInForce;
-		Date                  expiryDate;
+		public Date           expiryDate;
 	}
 }  // ReplaceOrderRequest
 

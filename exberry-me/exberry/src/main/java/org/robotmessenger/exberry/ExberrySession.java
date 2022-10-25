@@ -26,10 +26,11 @@ import org.robotmessenger.exberry.dto.request.CreateSessionRequest;
  */
 public class ExberrySession implements ILifeCycle, IConnectionListener  {
 
-	String                secretKey;
-	Connection            connection;
-	boolean               verbose = false;
-	CreateSessionRequest  session = new CreateSessionRequest();
+	String                  secretKey;
+	Connection              connection;
+	IExberrySessionListener listener;
+	boolean                 verbose = false;
+	CreateSessionRequest    session = new CreateSessionRequest();
 	
 	
 	
@@ -86,6 +87,15 @@ public class ExberrySession implements ILifeCycle, IConnectionListener  {
 	public boolean getVerbose()  {
 		
 		return this.verbose;
+	}
+	
+	/**
+	 * Add an IExberrySessionListener event handler to this instance object;
+	 * @param listener
+	 */
+	public void addExberrySessionListener( IExberrySessionListener listener )  {
+		
+		this.listener = listener;
 	}
 	
 	/**
@@ -171,42 +181,63 @@ public class ExberrySession implements ILifeCycle, IConnectionListener  {
 	@Override
 	public void onOpen() {
 		
+		if( listener != null )
+			listener.onOpen( this );
 	}
 
 	/**
 	 * Handle websocket closing communication event with exberry;
+	 * 
+	 * @param reasonCode Close reason code; 
 	 */
 	@Override
 	public void onClose( int reasonCode ) {
-		
+
+		if( listener != null )
+			listener.onClose( this, reasonCode );
 	}
 
 	/**
 	 * Handle communication error events from websocket implementation;
+	 * 
+	 * @param error The error message;
 	 */
 	@Override
 	public void onError( String error ) {
 		
-		System.err.println( error );
+		if( verbose )
+			System.err.println( error );
+		
+		if( listener != null )
+			listener.onError( this, error );
 	}
 
 	/**
 	 * Handle websocket String message transfer processing event with data from exberry;
+	 * 
+	 * @param message The exbrry server message received; 
 	 */
 	@Override
 	public void onMessage( String message ) {
 		
-		System.out.println( message );
+		if( verbose )
+			System.out.println( message );
 		
-		// TODO: Deserialize here !!
+		if( listener != null )
+			listener.onMessage( this, message );
+		
+		// TODO: Deserialize here ?????!!
 	}
 
 	/**
 	 * Handle websocket ByteBuffer message transfer processing event with data from exberry;
+	 * 
+	 * @param message The exbrry server message received;
 	 */
 	@Override
 	public void onMessage( ByteBuffer message ) {
 		
+		// TODO: Will be needed ?
 	}
 	
 }  // ExberrySession
