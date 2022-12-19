@@ -8,6 +8,8 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
+import java.util.HexFormat;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -113,9 +115,9 @@ public class ExberrySession implements ILifeCycle, IConnectionListener  {
 			  
 			sha256HMAC.init( secretKey );
 
-			session.d.signature = new BigInteger( 1, sha256HMAC.doFinal( strSignature.getBytes( "UTF-8" ) ) ).toString( 16 );
+			session.d.signature = HexFormat.of().formatHex( sha256HMAC.doFinal( strSignature.getBytes( "UTF-8" ) ) );
 			session.d.timestamp = timeStamp;
-						
+			
 			return sendRequest( session );
 
 		} catch( Exception e ) {
