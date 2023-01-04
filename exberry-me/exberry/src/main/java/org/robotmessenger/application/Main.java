@@ -8,6 +8,7 @@ import java.util.Vector;
 import org.robotmessenger.exberry.ExberryOrderManager;
 import org.robotmessenger.exberry.ExberrySession;
 import org.robotmessenger.exberry.IExberrySessionListener;
+import org.robotmessenger.exberry.dto.Enums.AccountType;
 import org.robotmessenger.exberry.dto.Enums.OrderType;
 import org.robotmessenger.exberry.dto.Enums.Side;
 import org.robotmessenger.exberry.dto.Enums.TimeInForce;
@@ -175,12 +176,23 @@ public class Main {
 	        panel.addComponent( new Label( "UserId" ) );
 	        final TextBox userIdTxt = new TextBox( "UATUserTest10" ).addTo( panel );
 
+	        panel.addComponent( new Label( "AccountId" ) );
+	        final TextBox accountIdTxt = new TextBox( "1000" ).addTo( panel );
+
+	        panel.addComponent( new Label( "Account type" ) );
+	        final ComboBox<String> accountTypeCombo = new ComboBox<String>();
+	        accountTypeCombo.addItem( "Client" );
+	        accountTypeCombo.addItem( "House" );
+	        panel.addComponent( accountTypeCombo );
+	        
 	        panel.addComponent( new EmptySpace( new TerminalSize( 0, 0 ) ) );
 	        panel.addComponent( lblOutput );
 	        
 	        new Button( "Send!", new Runnable() {
 	            @Override
 	            public void run() {
+	            	Integer accountId = (accountIdTxt.getText().length() != 0 ? Integer.parseInt(accountIdTxt.getText()) : null);
+	            	AccountType accountType = (accountId != null ? AccountType.values()[accountTypeCombo.getSelectedIndex()] : null);
 	            	
 	                order.orderType   = OrderType.values()[orderTypeCombo.getSelectedIndex()];
 	                order.side        = Side.values()[orderSideCombo.getSelectedIndex()];
@@ -190,6 +202,8 @@ public class Main {
 	                order.mpOrderId   = Long.parseLong( mpOrderIdTxt.getText() );
 	                order.timeInForce = TimeInForce.values()[timeInForceCombo.getSelectedIndex()]; 
 	                order.userId      = userIdTxt.getText();
+	                order.accountId   = accountId;
+	                order.accountType = accountType;
 
 	                pair.setValue( true );
 	                window.close();
